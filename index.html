@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini Jogo Interativo</title>
+    <link rel="shortcut icon" href="jogador.png" type="image/png">
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: white;
+        }
+        #game-container {
+            width: 600px;
+            height: 400px;
+            background-color: #333;
+            border: 3px solid white;
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+        }
+        #player {
+            width: 80px;
+            position: absolute;
+            bottom: 10px;
+            left: 260px;
+            transition: transform 0.1s;
+        }
+        #enemy {
+            width: 80px;
+            position: absolute;
+            top: 50px;
+            right: 20px;
+        }
+        #dialogo {
+            background-color: black;
+            padding: 10px;
+            width: 80%;
+            margin: 10px auto;
+            border-radius: 5px;
+        }
+        .vida-container {
+            width: 250px;
+            height: 20px;
+            background: gray;
+            margin: 10px auto;
+            border: 2px solid white;
+            position: relative;
+        }
+        .vida {
+            height: 100%;
+            transition: width 0.3s, background 0.3s;
+        }
+        #vida-player { 
+            background: green; 
+            width: 100%; 
+        }
+        #vida-inimigo { 
+            background: red; 
+            width: 100%; 
+        }
+        .btn {
+            padding: 10px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+        .dano { 
+            background: red; 
+            color: white; 
+        }
+        .cura { 
+            background: green; 
+            color: white; 
+        }
+        .loja { 
+            background: orange; 
+            color: white; 
+        }
+        .ataque { 
+            background: blue; 
+            color: white; 
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Mini Jogo Interativo</h2>
+
+    <div id="dialogo">Bem-vindo! Use as setas para mover o personagem.</div>
+
+    <div id="game-container">
+        <img id="player" src="jogador.png" alt="Jogador">
+        <img id="enemy" src="enemy.png" alt="Inimigo">
+    </div>
+
+    <h3>Vida do Jogador</h3>
+    <div class="vida-container">
+        <div id="vida-player" class="vida"></div>
+    </div>
+
+    <h3>Vida do Inimigo</h3>
+    <div class="vida-container">
+        <div id="vida-inimigo" class="vida"></div>
+    </div>
+
+    <button class="btn dano" onclick="alterarVida(-20)">🔥 Tomar Dano</button>
+    <button class="btn cura" onclick="alterarVida(20)">💊 Curar</button>
+    <button class="btn loja" onclick="abrirLoja()">🛒 Loja</button>
+    <button class="btn ataque" onclick="ataqueEspecial()">⚡ Ataque Especial</button>
+
+    <script>
+        let vidaJogador = 100;
+        let vidaInimigo = 100;
+        let posX = 260;
+       
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowLeft" && posX > 10) posX -= 20;
+            if (e.key === "ArrowRight" && posX < 510) posX += 20;
+            document.getElementById("player").style.left = posX + "px";
+        });     
+
+        function alterarVida(valor) {
+            vidaJogador += valor;
+            if (vidaJogador > 100) vidaJogador = 100;
+            if (vidaJogador < 0) vidaJogador = 0;
+
+            let barra = document.getElementById("vida-player");
+            barra.style.width = vidaJogador + "%";
+            barra.style.background = vidaJogador > 60 ? "green" : vidaJogador > 30 ? "yellow" : "red";
+
+            if (vidaJogador === 0) document.getElementById("dialogo").innerText = "Você perdeu!";
+        }
+
+        function abrirLoja() {
+            let escolha = confirm("Deseja comprar uma poção de cura por 10 moedas?");
+            if (escolha) alterarVida(30);
+        }
+
+        function ataqueEspecial() {
+            vidaInimigo -= 25;
+            if (vidaInimigo < 0) vidaInimigo = 0;
+
+            let barra = document.getElementById("vida-inimigo");
+            barra.style.width = vidaInimigo + "%";
+
+            document.getElementById("enemy").style.transform = "scale(1.2)";
+            setTimeout(() => document.getElementById("enemy").style.transform = "scale(1)", 200);
+
+            if (vidaInimigo === 0) document.getElementById("dialogo").innerText = "Você venceu!";
+        }
+    </script>
+
+</body>
+</html>
